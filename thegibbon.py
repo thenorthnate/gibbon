@@ -1,10 +1,11 @@
 '''
-@Title: Finance.py
-@Author: Nathan North
-@Org: North
+@title: thegibbon.py
+@author: Nathan North
+@org: North
+@version: 1.0
 
-@Description: Use this script to keep track of financial information!
-@Loc: App runs at - http://127.0.0.1:5000/
+@description: Use this script to keep track of financial information!
+@loc: App runs at - http://127.0.0.1:5000/
 '''
 
 #IMPORTS
