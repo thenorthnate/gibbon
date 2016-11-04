@@ -1,0 +1,45 @@
+{% extends "layout.html" %}
+{% block body %}
+{% if session.logged_in %}
+<div class="container">
+  <center>
+    <div class="well" style="width:40%;">
+      {% if confirm %}
+      <div class="alert alert-success" role="alert">
+        <p class="error">Successfully updated profile!</p>
+      </div>
+      <br>
+      {% endif %}
+      <h2>Update Profile.</h2>
+      <form action="{{ url_for("profile") }}" method="post">
+        <div class = "form-group">
+          <label class="sr-only">First Name</label>
+          <input value = "{{ request.form.firstName }}" name = "firstName" class="form-control" placeholder="First Name" required>
+        </div>
+        <div class = "form-group">
+          <label class="sr-only">Last Name</label>
+          <input value = "{{ request.form.lastName }}" name = "lastName" class="form-control" placeholder="Last Name" required>
+        </div>
+        <div class = "form-group">
+          <label class="sr-only">Nickname</label>
+          <input value = "{{ request.form.nickName }}" name = "nickName" class="form-control" placeholder="Nickname" required>
+        </div>
+        <div class = "form-group">
+          <label for="email" class="sr-only">Email address</label>
+          <input type="email" value = "{{ request.form.email }}" name = "email" class="form-control" placeholder="Email address" required autofocus>
+        </div>
+        <div class = "form-group">
+          <label for="password" class="sr-only">Password</label>
+          <input type="password" value = "{{ request.form.password }}" name = "password" class="form-control" placeholder="Password" required>
+        </div>
+        <div class = "form-group">
+          <label class="sr-only">Birthday</label>
+          <input value = "{{ request.form.birthday }}" name = "birthday" class="form-control" placeholder="Birth Date (mm/dd/yyyy)" required>
+        </div>
+        <button class="btn btn-lg btn-primary btn-block" type="submit" style="width:50%;">Update Profile &raquo;</button>
+      </form>
+    </div> <!-- well -->
+  </center>
+</div> <!-- container -->
+{% endif %}
+{% endblock %}

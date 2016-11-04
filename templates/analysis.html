@@ -1,0 +1,100 @@
+{% extends "layout.html" %}
+{% block body %}
+{% if session.logged_in %}
+
+<div class="container">
+  <div class="page-header">
+    <center>
+      <h1>Take a Look.</h1>
+    </center>
+  </div> <!-- page-header -->
+  <table class="table">
+    <tbody>
+      <tr>
+        <td  style="width:40%;">
+          <div class="well">
+            <center>
+              <h3>Spending Analysis</h3>
+              <div id="canvas-holder" style="width:100%">
+                  <canvas id="chart-area" width="300" height="300" />
+              </div>
+            </center>
+          </div> <!-- well -->
+        </td>
+        <td>
+          <div class="page-header">
+            <h3>Some Insight.</h3>
+          </div> <!-- page-header -->
+          <p>
+            Total Historical Debits: ${{ totalspend }}
+            <br>
+            Total Historical Credits: ${{ totalgain }}
+          </p>
+        </td>
+      </tr>
+    </tbody>
+  </table>
+</div> <!-- container -->
+
+
+
+
+
+
+<script>
+  var randomColorFactor = function() {
+      return Math.round(Math.random() * 255);
+  };
+
+  var randomColor = function(opacity) {
+      return 'rgba(' + randomColorFactor() + ',' + randomColorFactor() + ',' + randomColorFactor() + ',' + (opacity || '.3') + ')';
+  };
+
+  var bgDataColor = function() {
+    var colors = [];
+      for (i = 0; i < {{ plotYData }}.length; i++ ){
+          colors.push(randomColor(0.5));
+      };
+    return colors;
+  };
+
+  var datacolor = 'rgba(232, 111, 74, .4)';
+  var config = {
+      type: 'pie',
+      data: {
+          datasets: [{
+              data: {{ plotYData }},
+          }],
+          labels: {{ xLabels|safe }}
+      },
+      options: {
+          responsive: true
+      }
+  };
+
+  $.each(config.data.datasets, function(i, dataset) {
+      dataset.backgroundColor = bgDataColor();
+  });
+
+
+  window.onload = function() {
+      var ctx1 = document.getElementById("chart-area").getContext("2d");
+      window.myPie = new Chart(ctx1, config);
+  };
+
+</script>
+
+
+{% else %}
+<div class="container">
+  <div class="jumbotron">
+    <h1>Welcome!</h1>
+    <p>Please login to view your financial information.</p>
+    <p>
+      <a class="btn btn-lg btn-primary" href="{{ url_for("login") }}" role="button">Sign Up! &raquo;</a>
+    </p>
+  </div>
+</div>
+
+{% endif %}
+{% endblock %}

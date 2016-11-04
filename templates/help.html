@@ -1,0 +1,81 @@
+{% extends "layout.html" %}
+{% block body %}
+<div class="container">
+  <div class="jumbotron">
+    <h1>Usage:</h1>
+    <br>
+    <br>
+    <h2>Home Page</h2>
+    <h4>Adding a Transaction<h4>
+    <p>
+      To add a transaction, simply fill out the information and click submit.
+      If a green affirmation message is displayed (and the value in your accounts
+      has changed by the correct amount) then your transaction has been recorded.
+      <br>
+      <br>
+      Note: If you haven't added any accounts yet, you will need to follow the link
+      to create one!
+    </p>
+    <br>
+    <br>
+    <h2>History Page</h2>
+    <p>
+      The history page is simply a location to view the history of your accounts.
+      There are three parameters that dictate what you see.
+      <br>
+      <br>
+      The first of course is the dropdown menu where you select the account
+      whose history you'd like to look at.
+      <br>
+      <br>
+      The other two parameters are both entered into the text input beside the
+      dropdown. These two inputs should be integer numbers seperated by a comma.
+      The first number is the number of days ago you'd like the plot to start.
+      The second number is the number of days you'd like to see in the plot.
+      <br>
+      <br>
+      Both of these numbers are optional and the plot will default to showing you
+      the previous 20 days. After clicking "go", the plot will update with the desired information.
+    </p>
+    <br>
+    <br>
+    <h2>Transactions Page</h2>
+    <h4>Where are all my entries?</h4>
+    <p>
+      To keep the program light weight, only 20 transactions will be shown
+      at one time. See the search options below to find older entries.
+    </p>
+    <h4>How do I search?</h4>
+    <p>
+      For a general search on the entire database, you simply need to type in
+      search parameters seperated by commas. Each parameter will be searched
+      for and returned to the screen. If more than 20 results are returned,
+      only the latest 20 will be displayed.
+    </p>
+    <h4>Specific Searches</h4>
+    <p>
+      A specific search begins with:
+      <br>
+      =?
+      <br>
+      And is followed by a search parameter. A "$" searches all transactions
+      for those that are + or - $5 of the value after the dollar sign.
+      <br>
+      <br>
+      EG:
+      <br>
+      =?$10
+      <br>
+      This search will return all transactions between $5 and $15.
+      <br>
+      <br>
+      This type of search can be performed on dates as well. The key for a
+      date search is either a capital or lower case "d" instead of a "$" followed
+      by the date in m/d/yyyy format. General searches and specific searches
+      can be done at the same time as long as they are seperated by commas.
+    </p>
+    <br>
+    <br>
+  </div>
+</div>
+{% endblock %}

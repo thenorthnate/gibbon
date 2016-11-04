@@ -1,0 +1,48 @@
+{% extends "cover.html" %}
+{% block body %}
+
+
+<!-- div class="container" -->
+<div class="inner cover">
+  <hr>
+  <h1 class="cover-heading">Create at will.</h1>
+  <hr>
+  <center>
+    <form action="{{ url_for("createprofile") }}" method="post" style="width:50%;">
+      <div class = "form-group">
+        <label class="sr-only">First Name</label>
+        <input value = "{{ request.form.firstName }}" name = "firstName" class="form-control" placeholder="First Name" required>
+      </div>
+      <div class = "form-group">
+        <label class="sr-only">Last Name</label>
+        <input value = "{{ request.form.lastName }}" name = "lastName" class="form-control" placeholder="Last Name" required>
+      </div>
+      <div class = "form-group">
+        <label class="sr-only">Nickname</label>
+        <input value = "{{ request.form.nickName }}" name = "nickName" class="form-control" placeholder="Nickname" required>
+      </div>
+      <div class = "form-group">
+        <label for="email" class="sr-only">Email address</label>
+        <input type="email" value = "{{ request.form.email }}" name = "email" class="form-control" placeholder="Email address" required autofocus>
+      </div>
+      <div class = "form-group">
+        <label for="password" class="sr-only">Password</label>
+        <input type="password" value = "{{ request.form.password }}" name = "password" class="form-control" placeholder="Password" required>
+      </div>
+      <div class = "form-group">
+        <label class="sr-only">Birthday</label>
+        <input value = "{{ request.form.birthday }}" name = "birthday" class="form-control" placeholder="Birth Date (mm/dd/yyyy)" required>
+      </div>
+      <button class="btn btn-lg btn-primary btn-block" type="submit" style="width:75%;">Create Profile &raquo;</button>
+    </form>
+  </center>
+
+  {% if error %}
+  <br>
+  <div class="alert alert-warning" role="alert">
+    <p class="error"><strong>{{ error }}</strong> | Please try again.</p>
+  </div>
+  {% endif %}
+</div> <!-- inner cover -->
+
+{% endblock %}

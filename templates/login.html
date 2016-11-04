@@ -1,0 +1,26 @@
+{% extends "cover.html" %}
+{% block body %}
+<!-- head>
+<link href="{{ url_for("static", filename = "signin.css") }}" rel="stylesheet">
+</head -->
+<div class="inner cover">
+  <!-- div class="container" -->
+  <center>
+    <form class="form-signin" action="{{ url_for("login") }}" method="post" style="width:50%;">
+      <h2 class="form-signin-heading">Enter.</h2>
+      <label for="inputEmail" class="sr-only">Email address</label>
+      <input type="email" value = "{{ request.form.inputEmail }}" name = "inputEmail" id="inputEmail" class="form-control" placeholder="Email address" required autofocus>
+      <br>
+      <label for="inputPassword" class="sr-only">Password</label>
+      <input type="password" value = "{{ request.form.inputPassword }}" name = "inputPassword" id="inputPassword" class="form-control" placeholder="Password" required>
+      <div class="checkbox">
+        <label>
+          <input type="checkbox" value="remember-me"> Remember me
+        </label>
+      </div>
+      <button class="btn btn-lg btn-warning btn-block" type="submit" style="width:50%;">Sign in</button>
+    </form>
+  </center>
+  <!--/div> <! /container -->
+</div> <!-- /inner cover -->
+{% endblock %}

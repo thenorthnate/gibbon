@@ -1,0 +1,53 @@
+<!DOCTYPE html>
+<html lang="en">
+  <head>
+    <meta charset="utf-8">
+    <meta http-equiv="X-UA-Compatible" content="IE=edge">
+    <meta name="viewport" content="width=device-width, initial-scale=1">
+    <!-- The above 3 meta tags *must* come first in the head; any other head content must come *after* these tags -->
+    <meta name="description" content="Finance App">
+    <meta name="author" content="Nathan North">
+    <link rel="icon" href="{{ url_for("static", filename="faviconF.ico") }}">
+
+    <title>Northern Finance</title>
+
+    <link href="{{ url_for("static", filename="bootstrap.min.css") }}" rel="stylesheet">
+    <link href="{{ url_for("static", filename="ie10-viewport-bug-workaround.css") }}" rel="stylesheet">
+    <link href="{{ url_for("static", filename="cover.css") }}" rel="stylesheet">
+  </head>
+
+  <body>
+    <script src="https://ajax.googleapis.com/ajax/libs/jquery/1.12.4/jquery.min.js"></script>
+    <script>window.jQuery || document.write('<script src="{{ url_for('static', filename='jquery.min.js') }}"><\/script>')</script>
+    <script src="{{ url_for("static", filename="bootstrap.min.js") }}"></script>
+    <!-- IE10 viewport hack for Surface/desktop Windows 8 bug -->
+    <script src="{{ url_for("static", filename="ie10-viewport-bug-workaround.js") }}"></script>
+
+    <div class="site-wrapper">
+      <div class="site-wrapper-inner">
+        <div class="cover-container">
+          <div class="masthead clearfix">
+            <div class="inner">
+              <h3 class="masthead-brand"><a href="{{ url_for("index") }}">Northern Finance</a></h3>
+              <nav>
+                <ul class="nav masthead-nav">
+                  <!-- li><a href="#">Home</a></li>
+                  <li><a href="#">Features</a></li -->
+                  <li><a href="{{ url_for("login") }}">Login</a></li>
+                </ul>
+              </nav>
+            </div>
+          </div>
+
+          {% block body %}{% endblock %}
+
+          <div class="mastfoot">
+            <div class="inner">
+              <p>Contact <a href="mailto:nathantnorth@yahoo.com?Subject=Northern%20Finance%20App">Nathan North</a> for more information.</p>
+            </div>
+          </div>
+        </div>
+      </div>
+    </div>
+  </body>
+</html>

@@ -1,0 +1,126 @@
+{% extends "layout.html" %}
+{% block body %}
+{% if session.logged_in %}
+
+<div class="container">
+  <div class="well">
+    <div class="page-header">
+      <center>
+        <h3>View History</h3>
+      </center>
+    </div> <!-- page-header -->
+
+    <center>
+
+      <form class="form-inline" action="{{ url_for("history") }}" method="POST">
+
+
+            <div class="form-group">
+
+              <select class="form-control" id="account" name="account">
+                {% for entry in bDATA %}
+                <option value="{{ entry.name }} - {{ entry.accountType }} - (#{{ entry.accountNumber }})">{{ entry.name }} - {{entry.accountType }} (#{{ entry.accountNumber }})</option>
+                {% else %}
+                <option value="none">No Accounts Found</option>
+                {% endfor %}
+              </select>
+            </div>
+
+
+            <div class="form-group">
+
+              <input value = "{{ request.form.time }}" name = "time" class="form-control" placeholder="Timeframe">
+            </div> <!-- form-group -->
+
+            <div class="form-group">
+              <button class="btn btn-sm btn-info btn-block" type="submit">Go &raquo;</button>
+            </div>
+
+      </form>
+    </center>
+
+  </div> <!-- well -->
+  <div style="width:100%;">
+      <canvas id="linecanvas"></canvas>
+  </div> <!-- canvas -->
+</div> <!-- container -->
+
+
+
+
+
+
+
+
+
+
+<script>
+    var randomColorFactor = function() {
+        return Math.round(Math.random() * 255);
+    };
+    var randomColor = function(opacity) {
+        return 'rgba(' + randomColorFactor() + ',' + randomColorFactor() + ',' + randomColorFactor() + ',' + (opacity || '.3') + ')';
+    };
+
+    var linecolor = 'rgba(232, 111, 74, .4)';
+    var pointcolor = 'rgba(244, 66, 66, .5)';
+
+    var config = {
+        type: 'line',
+        data: {
+            labels: {{ xLabels }},
+            datasets: [{
+                label: "{{ desiredAccount }}",
+                data: {{ Ydata }},
+                fill: false,
+                pointRadius: 2,
+                borderColor: linecolor,
+                backgroundColor: linecolor,
+                pointBorderColor: pointcolor,
+                pointBackgroundColor: pointcolor,
+                pointHoverRadius: 20,
+                pointBorderWidth: 12,
+                lineTension: 0.1,
+                borderWidth: 7
+            }]
+        },
+        options: {
+            responsive: true,
+            legend: {
+                position: 'bottom',
+            },
+            hover: {
+                mode: 'label'
+            },
+            scales: {
+                xAxes: [{
+                    display: true,
+                    scaleLabel: {
+                        display: true,
+                        labelString: "{{ startDate }} - {{ endDate }}"
+                    }
+                }],
+                yAxes: [{
+                    display: true,
+                    scaleLabel: {
+                        display: true,
+                        labelString: 'Balance ($)'
+                    }
+                }]
+            },
+            title: {
+                display: true,
+                text: 'Financial History'
+            }
+        }
+    };
+
+    window.onload = function() {
+        var ctx = document.getElementById("linecanvas").getContext("2d");
+        window.myLine = new Chart(ctx, config);
+    };
+
+</script>
+
+{% endif %}
+{% endblock %}
