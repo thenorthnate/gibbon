@@ -14,3 +14,4 @@ Installation can be done by running the command `pip install Flask` or by downlo
 
 
 ## General Use
+This application runs a local host server at `127.0.0.1:5000`. Simply run the main script in a terminal, then open your favorite web browser and naviagte to that web address. The interface will show up.
