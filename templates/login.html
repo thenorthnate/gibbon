@@ -20,6 +20,12 @@
       </div>
       <button class="btn btn-lg btn-warning btn-block" type="submit" style="width:50%;">Sign in</button>
     </form>
+    {% if error %}
+    <br>
+    <p>
+      Sorry. <a href="{{url_for("createprofile")}}">{{ error }}</a>
+    </p>
+    {% endif %}
   </center>
   <!--/div> <! /container -->
 </div> <!-- /inner cover -->

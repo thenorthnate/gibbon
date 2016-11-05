@@ -206,8 +206,6 @@ class OPS:
                 entry[item] = self.formData[item]
             self.uDATA = entry
             self.fDATA = [[entry], self.bDATA]
-            print(self.fDATA)
-            #self.filename = self.userDataFile
             self.writeFinanceData('update', self.userDataFile)
 
 
@@ -221,11 +219,12 @@ class OPS:
     def signin(self):
         self.error = None
         self.evalFiles()
+        if len(self.fDataFiles) < 1:
+            self.error = 'You must create an account first.'
 
         userfiles = []
         count = 0
         for item in self.fDataFiles:
-            #self.filename = item
             self.readFinanceData('user', item)
             if self.formData['inputEmail'] != self.uDATA[0]['email']:
                 self.error = 'Invalid Username'
@@ -236,6 +235,7 @@ class OPS:
                 userfiles.append(item)
                 self.userDataFile = item
                 self.transDataFile = self.uDATA[0]['tfilename']
+                self.error = None
 
 
         filenums = []
@@ -267,33 +267,32 @@ class OPS:
         entry = {'type':'bank'}
         dKeys = self.formData.keys()
         for item in dKeys:
+            if item == 'accountNumber':
+                for element in self.bDATA:
+                    if element['accountNumber'] == self.formData['accountNumber']:
+                        self.error = 'Account number is not unique.'
+                        return 0
             entry[item] = self.formData[item]
         self.bDATA.append(entry)
-        #self.filename = self.userDataFile
+
         self.fDATA = entry
         self.writeFinanceData('add', self.userDataFile)
 
         entryTime = str(datetime.datetime.now())
         entry = {'type':'trans', 'trNumber':str(int(time.time()*1000)), 'entryTime':entryTime, 'transType':'deposit', 'tags':'CREATION'}
         entry['description'] = 'This is the transaction associated with the creation of this account. DO NOT DELETE.'
-        dKeys = self.formData.keys()
-        for item in dKeys:
-            if item == 'name':
-                entry['bank'] = self.formData[item]
-            elif item == 'accountType':
-                entry['account'] = self.formData[item]
-            elif item == 'balance':
-                entry['amount'] = self.formData[item]
-            elif item == 'inceptiondate':
-                try:
-                    bDATE = datetime.datetime.strptime(self.formData[item], '%m/%d/%Y')
-                    entry['transactionDate'] = self.formData[item]
-                except:
-                    self.error = 'Invalid Date'
-                    return 0
-            elif item == 'accountNumber':
-                entry['accountNumber'] = self.formData[item]
 
+        entry['bank'] = self.formData['name']
+        entry['account'] = self.formData['accountType']
+        entry['amount'] = self.formData['balance']
+        try:
+            bDATE = datetime.datetime.strptime(self.formData['inceptiondate'], '%m/%d/%Y')
+            entry['transactionDate'] = self.formData['inceptiondate']
+        except:
+            self.error = 'Invalid Date'
+            return 0
+
+        entry['accountNumber'] = self.formData['accountNumber']
         self.tDATA.append(entry)
         self.fDATA = entry
         self.writeFinanceData('add', self.transDataFile)
@@ -345,43 +344,6 @@ class OPS:
 
         entry['description'] = self.formData['description']
 
-        '''
-        dKeys = self.formData.keys()
-        for item in dKeys:
-            if item == 'account':
-                item = self.formData[item].split('-')
-                entry['bank'] = item[0].strip(' ')
-                entry['account'] = item[1].strip(' ')
-                entry['accountNumber'] = item[2].strip('(# )')
-            elif item == 'amount':
-                entry['amount'] = float(self.formData['amount'])
-            elif item == 'transType':
-                entry[item] = self.formData[item]
-                if self.formData[item] == 'transfer':
-                    entry['amount'] = 0-float(self.formData['amount'])
-                    print('okay...')
-            elif item == 'toAccount':
-                if self.formData['transType'] == 'transfer':
-                    if self.formData[item] != 'N/A':
-                        item = self.formData[item].split('-')
-                        entry['toBank'] = item[0].strip(' ')
-                        entry['toAccount'] = item[1].strip(' ')
-                        entry['toAccountNumber'] = item[2].strip('(# )')
-                    else:
-                        self.error = 'Select bank to transfer to'
-                        return 0
-            elif item == 'tags':
-                entry['tags'] = self.formData[item].upper()
-            elif item == 'transDate':
-                try:
-                    bDATE = datetime.datetime.strptime(self.formData[item], '%m/%d/%Y')
-                    entry[item] = self.formData[item]
-                except:
-                    self.error = 'Invalid Date'
-                    return 0
-            else:
-                entry[item] = self.formData[item]
-            '''
         self.tDATA.append(entry)
         self.fDATA = entry
         self.writeFinanceData('add', self.transDataFile)
@@ -440,7 +402,6 @@ class OPS:
     '''
     def searchTransactions(self):
         values = self.formData['parameters'].split(',')
-        print(values)
         self.searchParams = []
         for value in values:
             self.searchParams.append(value.replace(' ', ''))
@@ -507,19 +468,14 @@ class OPS:
                         if item['transType'] == 'deposit':
                             entry['balance'] = round(float(entry['balance']) - float(item['amount']), 2)
                         elif item['transType'] == 'transfer':
-                            if 'toAccount' in item:
-                                entry['balance'] = round(float(entry['balance']) - float(item['amount']), 2)
-                            else:
-                                entry['balance'] = round(float(entry['balance']) - float(item['amount']), 2)
-                        elif self.formData['transType'] == 'withdrawl':
+                            entry['balance'] = round(float(entry['balance']) - float(item['amount']), 2)
+                        elif item['transType'] == 'withdrawl':
                             entry['balance'] = round(float(entry['balance']) + float(item['amount']), 2)
                 self.fDATA = [self.uDATA, self.bDATA]
                 self.writeFinanceData('update', self.userDataFile)
                 mark.append(i)
             i += 1
-
         for dex in reversed(mark):
-            print(dex)
             del self.tDATA[dex]
 
         self.fDATA = [self.tDATA]
@@ -597,7 +553,6 @@ class OPS:
         for day in days:
             dayVal = 0
             for transaction in reversed(self.tDATA):
-                print(transaction)
                 if self.plotAccount.replace(' ', '') == transaction['accountNumber'].replace(' ', ''):
                     tdate = datetime.datetime.strptime(transaction['transactionDate'], '%m/%d/%Y')
                     if tdate.day == day.day and tdate.month == day.month and tdate.year == day.year:
@@ -609,7 +564,6 @@ class OPS:
                             dayVal = dayVal - float(transaction['amount'])
 
             accountVal = accountVal + dayVal
-            #print(accountVal, day)
             self.plotYData.insert(0, accountVal)
         self.plotYData.pop(0)
 

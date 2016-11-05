@@ -52,6 +52,7 @@ def index():
 @app.route('/home', methods=['GET', 'POST'])
 def home():
     confirm = False
+    F.error = None
     nickName = ''
     F.formData = {}
     try:
@@ -106,6 +107,7 @@ def history():
 
 @app.route('/createprofile', methods=['GET', 'POST'])
 def createprofile():
+    F.error = None
     F.formData = {}
     if request.method == 'POST':
         F.formData = request.form
@@ -151,16 +153,20 @@ def analysis():
 @app.route('/addaccount', methods=['GET', 'POST'])
 def addaccount():
     F.formData = {}
+    F.error = None
     confirm = False
     if request.method == 'POST':
         F.formData = request.form
         F.addBankAccount()
         confirm = True
-    return render_template('addaccount.html', confirm=confirm)
+    return render_template('addaccount.html',
+                            confirm=confirm,
+                            error=F.error)
 
 @app.route('/login', methods=['GET', 'POST'])
 def login():
     F.formData = {}
+    F.error = None
     if request.method == 'POST':
         F.formData = request.form
         F.signin()
