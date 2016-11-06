@@ -5,17 +5,10 @@
 <div class="container">
 
     <div class="jumbotron" style="width:50%;margin:0 auto;">
-
-      {% if confirm %}
       {% if error %}
       <div class="alert alert-danger" role="alert">
         <p class="error">Whoops... {{ error }}</p>
       </div>
-      {% else %}
-      <div class="alert alert-success" role="alert">
-        <p class="error">Successfully added account!</p>
-      </div>
-      {% endif %}
       {% endif %}
 
       <h1>Hello again.</h1>

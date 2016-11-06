@@ -154,13 +154,12 @@ def analysis():
 def addaccount():
     F.formData = {}
     F.error = None
-    confirm = False
     if request.method == 'POST':
         F.formData = request.form
         F.addBankAccount()
-        confirm = True
+        if F.error == None:
+            return redirect(url_for('home'))
     return render_template('addaccount.html',
-                            confirm=confirm,
                             error=F.error)
 
 @app.route('/login', methods=['GET', 'POST'])

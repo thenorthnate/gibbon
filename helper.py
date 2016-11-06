@@ -165,6 +165,9 @@ class OPS:
         try:
             bDATE = self.formData['birthday']
             bDATE = datetime.datetime.strptime(bDATE, '%m/%d/%Y')
+            if bDATE > datetime.datetime.today():
+                self.error = "You can't be born in the future."
+                return 0
         except:
             self.error = 'Invalid Birthday'
             return 0
@@ -194,6 +197,9 @@ class OPS:
         try:
             bDATE = self.formData['birthday']
             bDATE = datetime.datetime.strptime(bDATE, '%m/%d/%Y')
+            if bDATE > datetime.datetime.today():
+                self.error = "You can't be born in the future."
+                return 0
         except:
             self.error = 'Invalid Birthday'
             return 0
@@ -272,26 +278,28 @@ class OPS:
                     if element['accountNumber'] == self.formData['accountNumber']:
                         self.error = 'Account number is not unique.'
                         return 0
+            if item == 'inceptiondate':
+                try:
+                    bDATE = datetime.datetime.strptime(self.formData['inceptiondate'], '%m/%d/%Y')
+                    if bDATE > datetime.datetime.today():
+                        self.error = "Account can't be created in the future."
+                        return 0
+                except:
+                    self.error = 'Invalid Date'
+                    return 0
+
             entry[item] = self.formData[item]
         self.bDATA.append(entry)
-
         self.fDATA = entry
         self.writeFinanceData('add', self.userDataFile)
-
         entryTime = str(datetime.datetime.now())
         entry = {'type':'trans', 'trNumber':str(int(time.time()*1000)), 'entryTime':entryTime, 'transType':'deposit', 'tags':'CREATION'}
         entry['description'] = 'This is the transaction associated with the creation of this account. DO NOT DELETE.'
-
         entry['bank'] = self.formData['name']
         entry['account'] = self.formData['accountType']
         entry['amount'] = self.formData['balance']
-        try:
-            bDATE = datetime.datetime.strptime(self.formData['inceptiondate'], '%m/%d/%Y')
-            entry['transactionDate'] = self.formData['inceptiondate']
-        except:
-            self.error = 'Invalid Date'
-            return 0
-
+        bDATE = datetime.datetime.strptime(self.formData['inceptiondate'], '%m/%d/%Y')
+        entry['transactionDate'] = self.formData['inceptiondate']
         entry['accountNumber'] = self.formData['accountNumber']
         self.tDATA.append(entry)
         self.fDATA = entry
