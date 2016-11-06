@@ -298,7 +298,7 @@ class OPS:
                     return 0
             elif item == 'amount':
                 try:
-                    testvalue = float(self.formData['amount'])
+                    testvalue = float(self.formData['balance'])
                 except:
                     self.error = 'Invalid account balance.'
                     return 0
