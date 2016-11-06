@@ -296,7 +296,7 @@ class OPS:
                 except:
                     self.error = 'Invalid Date'
                     return 0
-            elif item == 'amount':
+            elif item == 'balance':
                 try:
                     testvalue = float(self.formData['balance'])
                 except:
