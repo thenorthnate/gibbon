@@ -4,7 +4,7 @@
 @org: Northern Finance
 @description: Analytics driver for finance program
 '''
-
+from cipher import ENCODE, DECODE
 import datetime, json, os, time
 
 class OPS:
@@ -67,7 +67,9 @@ class OPS:
                 try:
                     with open(item, 'r') as datafile:
                         for line in datafile:
-                            row = json.loads(line)
+                            plainText = DECODE(line.strip('\n'), self.password)
+                            #DECODE LINE HERE
+                            row = json.loads(plainText)
                             if row['type']:
                                 tempFiles.append(item)
                                 break
@@ -95,28 +97,36 @@ class OPS:
                 self.uDATA = []
                 for line in datafile:
                     row = line.strip('\n')
-                    entry = json.loads(row)
+                    #DECODE LINE HERE
+                    plainText = DECODE(row, self.password)
+                    entry = json.loads(plainText)
                     if entry['type'] == 'user':
                         self.uDATA.append(entry)
             elif datatype == 'bank':
                 self.bDATA = []
                 for line in datafile:
                     row = line.strip('\n')
-                    entry = json.loads(row)
+                    #DECODE LINE HERE
+                    plainText = DECODE(row, self.password)
+                    entry = json.loads(plainText)
                     if entry['type'] == 'bank':
                         self.bDATA.append(entry)
             elif datatype == 'trans':
                 self.tDATA = []
                 for line in datafile:
                     row = line.strip('\n')
-                    entry = json.loads(row)
+                    #DECODE LINE HERE
+                    plainText = DECODE(row, self.password)
+                    entry = json.loads(plainText)
                     self.tDATA.append(entry)
             elif datatype == 'all':
                 self.uDATA = []
                 self.bDATA = []
                 for line in datafile:
                     row = line.strip('\n')
-                    entry = json.loads(row)
+                    #DECODE LINE HERE
+                    plainText = DECODE(row, self.password)
+                    entry = json.loads(plainText)
                     if entry['type'] == 'user':
                         self.uDATA.append(entry)
                     elif entry['type'] == 'bank':
@@ -136,13 +146,17 @@ class OPS:
         if style == 'add':
             with open(filename, 'a') as datafile:
                 row = json.dumps(self.fDATA)
-                datafile.write(row + '\n')
+                #ENCODE LINE HERE
+                cipherText = ENCODE(row, self.password)
+                datafile.write(cipherText + '\n')
         elif style == 'update':
             with open(filename, 'w') as datafile:
                 for category in self.fDATA:
                     for entry in category:
                         row = json.dumps(entry)
-                        datafile.write(row + '\n')
+                        #ENCODE LINE HERE
+                        cipherText = ENCODE(row, self.password)
+                        datafile.write(cipherText + '\n')
 
 
     '''
@@ -154,6 +168,7 @@ class OPS:
     '''
     def createUserProfile(self):
         self.error = None
+        self.password = self.formData['password']
         uniqueID = int(time.time())
         letterNr = ord('U')
         letterNt = ord('T')
@@ -180,7 +195,6 @@ class OPS:
                 entry[item] = self.formData[item]
             self.uDATA = entry
             self.fDATA = entry
-            #self.filename = self.userDataFile
             self.writeFinanceData('add', self.userDataFile)
 
 
@@ -224,10 +238,10 @@ class OPS:
     '''
     def signin(self):
         self.error = None
+        self.password = self.formData['inputPassword']
         self.evalFiles()
         if len(self.fDataFiles) < 1:
             self.error = 'You must create an account first.'
-
         userfiles = []
         count = 0
         for item in self.fDataFiles:
@@ -242,8 +256,6 @@ class OPS:
                 self.userDataFile = item
                 self.transDataFile = self.uDATA[0]['tfilename']
                 self.error = None
-
-
         filenums = []
         if count > 1:
             for item in userfiles:
@@ -256,9 +268,6 @@ class OPS:
             self.readFinanceData('user', item)
             self.userDataFile = item
             self.transDataFile = self.uDATA[0]['tfilename']
-
-
-
 
 
     '''
@@ -287,7 +296,6 @@ class OPS:
                 except:
                     self.error = 'Invalid Date'
                     return 0
-
             entry[item] = self.formData[item]
         self.bDATA.append(entry)
         self.fDATA = entry
@@ -317,7 +325,6 @@ class OPS:
         self.error = None
         entryTime = str(datetime.datetime.now())
         entry = {'type':'trans', 'trNumber':str(int(time.time()*1000)), 'entryTime':entryTime}
-
         try:
             item = self.formData['account'].split('-')
             entry['bank'] = item[0].strip(' ')
@@ -326,9 +333,7 @@ class OPS:
         except:
             self.error = 'Please add an account'
             return 0
-
         entry['tags'] = self.formData['tags'].upper()
-
         entry['transType'] = self.formData['transType']
         if self.formData['transType'] == 'transfer':
             entry['amount'] = round(0.0-float(self.formData['amount']), 2)
@@ -351,11 +356,9 @@ class OPS:
             return 0
 
         entry['description'] = self.formData['description']
-
         self.tDATA.append(entry)
         self.fDATA = entry
         self.writeFinanceData('add', self.transDataFile)
-
         if entry['transType'] == 'transfer':
             entry1 = entry.copy()
             entry1['amount'] = abs(float(entry['amount']))
@@ -394,7 +397,6 @@ class OPS:
                         toAccountInfo = self.formData['toAccount'].split('-')
                         if toAccountInfo[2].strip('(# )') == searchEntry['accountNumber']:
                             searchEntry['balance'] = round(float(searchEntry['balance']) + float(self.formData['amount']), 2)
-
                 elif self.formData['transType'] == 'withdrawl':
                     entry['balance'] = round(float(entry['balance']) - float(self.formData['amount']), 2)
         self.fDATA = [self.uDATA, self.bDATA]
@@ -413,7 +415,6 @@ class OPS:
         self.searchParams = []
         for value in values:
             self.searchParams.append(value.replace(' ', ''))
-
         self.sDATA = []
         find = []
         for entry in self.tDATA:
@@ -490,10 +491,6 @@ class OPS:
         self.writeFinanceData('update', self.transDataFile)
 
 
-
-
-
-
     '''
     linePlot: Takes the information from the client, formats it, and returns the
     desired data to plot.
@@ -509,7 +506,6 @@ class OPS:
             self.plotAccount = accountNumber[2].strip(' (# ) ')
         except:
             self.plotAccount = self.bDATA[0]['accountNumber']
-
         try:
             timeEntry = self.formData['time'].split(',')
             if len(timeEntry) > 1:
@@ -520,8 +516,6 @@ class OPS:
                 self.daysInView = 20
         except:
             pass
-
-        #accountBalance = 0
         for entry in self.bDATA:
             if entry['type'] == 'bank':
                 if self.plotAccount.replace(' ', '') == entry['accountNumber'].replace(' ', ''):
@@ -532,19 +526,14 @@ class OPS:
         elif self.daysAgo > self.daysInView:
             upperBound = datetime.datetime.today() - datetime.timedelta(days=self.daysAgo) + datetime.timedelta(days=self.daysInView)
             self.daysAgo = self.daysInView
-
-
         self.xLabels = []
-
         days = []
         for i in range(self.daysAgo):
             day = upperBound - datetime.timedelta(days=i)
             days.append(day)
             self.xLabels.insert(0, day.day)
-
         self.startDate = self.months[days[-1].month-1] + ' ' + str(days[-1].day) + ', ' + str(days[-1].year)
         self.endDate = self.months[days[0].month-1] + ' ' + str(days[0].day) + ', ' + str(days[0].year)
-
         for transaction in self.tDATA:
             if self.plotAccount.replace(' ', '') == transaction['accountNumber'].replace(' ', ''):
                 tdate = datetime.datetime.strptime(transaction['transactionDate'], '%m/%d/%Y')
@@ -555,9 +544,7 @@ class OPS:
                         accountVal = accountVal + float(transaction['amount'])
                     elif transaction['transType'] == 'transfer':
                         accountVal = accountVal - float(transaction['amount'])
-
         self.plotYData = [accountVal]
-
         for day in days:
             dayVal = 0
             for transaction in reversed(self.tDATA):
@@ -570,7 +557,6 @@ class OPS:
                             dayVal = dayVal + float(transaction['amount'])
                         elif transaction['transType'] == 'transfer':
                             dayVal = dayVal - float(transaction['amount'])
-
             accountVal = accountVal + dayVal
             self.plotYData.insert(0, accountVal)
         self.plotYData.pop(0)

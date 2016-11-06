@@ -19,7 +19,6 @@ SECRET_KEY = 'development key'
 
 #INIT
 F = OPS()
-F.evalFiles()
 
 #FUNCTONS
 app = Flask(__name__)
