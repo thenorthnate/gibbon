@@ -223,8 +223,11 @@ class OPS:
         else:
             dKeys = self.formData.keys()
             for item in dKeys:
+                if self.formData[item] == '':
+                    self.error = 'Must complete all fields.'
+                    return 0
                 entry[item] = self.formData[item]
-            self.uDATA = entry
+            self.uDATA = [entry]
             self.fDATA = [[entry], self.bDATA]
             self.writeFinanceData('update', self.userDataFile)
 
@@ -241,7 +244,7 @@ class OPS:
         self.password = self.formData['inputPassword']
         self.evalFiles()
         if len(self.fDataFiles) < 1:
-            self.error = 'You must create an account first.'
+            self.error = 'Invalid credentials, or you must create an account first.'
         userfiles = []
         count = 0
         for item in self.fDataFiles:
