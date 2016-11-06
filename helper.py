@@ -287,7 +287,7 @@ class OPS:
                     if element['accountNumber'] == self.formData['accountNumber']:
                         self.error = 'Account number is not unique.'
                         return 0
-            if item == 'inceptiondate':
+            elif item == 'inceptiondate':
                 try:
                     bDATE = datetime.datetime.strptime(self.formData['inceptiondate'], '%m/%d/%Y')
                     if bDATE > datetime.datetime.today():
@@ -295,6 +295,12 @@ class OPS:
                         return 0
                 except:
                     self.error = 'Invalid Date'
+                    return 0
+            elif item == 'amount':
+                try:
+                    testvalue = float(self.formData['amount'])
+                except:
+                    self.error = 'Invalid account balance.'
                     return 0
             entry[item] = self.formData[item]
         self.bDATA.append(entry)
