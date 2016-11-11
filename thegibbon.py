@@ -19,7 +19,6 @@ SECRET_KEY = 'development key'
 
 #INIT
 F = OPS()
-F.evalFiles()
 
 #FUNCTONS
 app = Flask(__name__)
@@ -31,18 +30,23 @@ if port is None:
 
 @app.route('/help')
 def help():
+    if F.password == '':
+        return redirect(url_for('logout'))
     return render_template('help.html')
 
 
 @app.route('/profile', methods=['GET', 'POST'])
 def profile():
+    if F.password == '':
+        return redirect(url_for('logout'))
     F.formData = {}
-    confirm = False
     if request.method == 'POST':
         F.formData = request.form
         F.updateProfile()
-        confirm = True
-    return render_template('profile.html', confirm=confirm)
+        if F.error == None:
+            return redirect(url_for('home'))
+    return render_template('profile.html',
+                            error=F.error)
 
 
 @app.route('/')
@@ -51,6 +55,8 @@ def index():
 
 @app.route('/home', methods=['GET', 'POST'])
 def home():
+    if F.password == '':
+        return redirect(url_for('logout'))
     confirm = False
     F.error = None
     nickName = ''
@@ -81,6 +87,8 @@ def home():
 
 @app.route('/history', methods=['GET', 'POST'])
 def history():
+    if F.password == '':
+        return redirect(url_for('logout'))
     F.formData = {}
     try:
         desiredAccount = F.bDATA[0]['name'] + ' - ' + F.bDATA[0]['accountType'] + ', #' + F.bDATA[0]['accountNumber']
@@ -118,6 +126,8 @@ def createprofile():
 
 @app.route('/transactions', methods=['GET', 'POST'])
 def transactions():
+    if F.password == '':
+        return redirect(url_for('logout'))
     F.formData = {}
     dispTDATA = []
     for item in reversed(F.tDATA):
@@ -142,6 +152,8 @@ def transactions():
 
 @app.route('/analysis', methods=['GET', 'POST'])
 def analysis():
+    if F.password == '':
+        return redirect(url_for('logout'))
     F.pie()
     return render_template('analysis.html',
                             xLabels=F.xLabels,
@@ -152,6 +164,8 @@ def analysis():
 
 @app.route('/addaccount', methods=['GET', 'POST'])
 def addaccount():
+    if F.password == '':
+        return redirect(url_for('logout'))
     F.formData = {}
     F.error = None
     if request.method == 'POST':

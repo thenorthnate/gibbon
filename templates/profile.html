@@ -4,9 +4,9 @@
 <div class="container">
   <center>
     <div class="well" style="width:40%;">
-      {% if confirm %}
+      {% if error %}
       <div class="alert alert-success" role="alert">
-        <p class="error">Successfully updated profile!</p>
+        <p class="error"><strong>Error</strong> {{ error }}</p>
       </div>
       <br>
       {% endif %}
