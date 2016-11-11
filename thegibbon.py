@@ -155,11 +155,16 @@ def analysis():
     if F.password == '':
         return redirect(url_for('logout'))
     F.pie()
+    F.genAnalytics()
     return render_template('analysis.html',
                             xLabels=F.xLabels,
                             plotYData=F.plotYData,
-                            totalspend=round(F.totalspend),
-                            totalgain=round(F.totalgain, 2))
+                            totalspend=round(F.totalspend, 2),
+                            totalgain=round(F.totalgain, 2),
+                            netvalue=round(F.netvalue, 2),
+                            numoftrans=F.numoftrans,
+                            totalsavings=round(F.totalsavings, 2),
+                            totalchecking=round(F.totalchecking, 2))
 
 
 @app.route('/addaccount', methods=['GET', 'POST'])

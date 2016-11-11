@@ -45,8 +45,13 @@ class OPS:
         self.startDate = ''
         self.endDate = ''
 
+        #Analytics Values
         self.totalspend = 0
         self.totalgain = 0
+        self.netvalue = 0
+        self.numoftrans = 0
+        self.totalsavings = 0
+        self.totalchecking = 0
 
 
         #Error handling
@@ -596,7 +601,24 @@ class OPS:
                 self.totalgain += float(entry['amount'])
         self.xLabels = list(set(taglist))
         for l in self.xLabels:
-            perc = round((int(TAG[l])/self.totalspend)*100, 1)
+            perc = round((int(TAG[l])/self.totalspend)*100, 2)
             data.append(perc)
         self.xLabels = json.dumps(self.xLabels)
         self.plotYData = data
+        self.netvalue = self.totalgain - self.totalspend
+
+    def genAnalytics(self):
+        i = 0
+        self.numoftrans = 0
+        self.totalsavings = 0
+        self.totalchecking = 0
+        for entry in self.tDATA:
+            if entry['tags'] == 'CREATION':
+                pass
+            else:
+                self.numoftrans += 1
+            if entry['account'].upper() == 'SAVINGS':
+                self.totalsavings += float(entry['amount'])
+            elif entry['account'].upper() == 'CHECKING':
+                self.totalchecking += float(entry['amount'])
+            i += 1
